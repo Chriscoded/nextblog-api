@@ -1,8 +1,7 @@
 import connect from "@/lib/db";
 import User from "@/lib/Models/User";
 import { Types } from "mongoose";
-import { NextResponse } from "next/server"
-import { useId } from "react";
+import { NextResponse } from "next/server";
 
 const ObjectId = require("mongoose").Types.ObjectId;
 
@@ -31,9 +30,12 @@ export const POST = async (request: Request) =>{
     );
     }
     catch(error: any){
-        return new NextResponse("Error in creating user "+ error.message, {
-            status: 500
-        })
+        
+        return new NextResponse(JSON.stringify({message: "Error in creating user " + error.message}),
+            {
+                status: 500
+            }
+        )
     }
 
 }
@@ -76,7 +78,9 @@ export const PATCH = async (request: Request) => {
             {status: 200}
         )
     } catch (error: any){
-        return new NextResponse("Error in updating user " + error.message, {
+       
+        return new NextResponse( JSON.stringify({message: "Error in updating user " + error.message}),
+            {
                 status: 500
             }
         );
@@ -121,8 +125,12 @@ export const DELETE  = async (request: Request) =>{
         )
     }
     catch(error: any){
-        return new NextResponse("Error in deleting user " + error.message, 
-            {status: 500}
+
+         return new NextResponse(
+            JSON.stringify({message: "Error in deleting user " + error.message}),
+            {
+                status: 500
+            }
         )
     }
 }

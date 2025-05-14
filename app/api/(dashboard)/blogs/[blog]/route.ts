@@ -102,7 +102,7 @@ export const PATCH = async (request : Request, context: {params: any}) => {
 
         if(!userId || !Types.ObjectId.isValid(userId)){
             return new NextResponse(
-                JSON.stringify({ message: "Invalid or missing userId" }),
+                JSON.stringify({ message: "Invalid or missing User Id" }),
                 {status: 400}
             )
         }
@@ -118,7 +118,6 @@ export const PATCH = async (request : Request, context: {params: any}) => {
         await connect();
 
         const user = await User.findById(userId);
-    
         if(!user){
             return new NextResponse(
                 JSON.stringify({message: "User not found"}),
@@ -161,6 +160,68 @@ export const PATCH = async (request : Request, context: {params: any}) => {
     } catch (error: any) {
         return new NextResponse( 
             JSON.stringify({ message: "Error updating blog" + error.message }),{
+            status: 500
+        });
+    }
+}
+
+export const DELETE = async (request : Request, context: {params: any}) => {
+    try {
+        const blogId = context.params.blog;
+
+        const { searchParams } = new URL(request.url);
+        const userId = searchParams.get("userId");
+
+        if(!userId || !Types.ObjectId.isValid(userId)){
+            return new NextResponse(
+                JSON.stringify({ message: "Invalid or missing User Id" }),
+                {status: 400}
+            )
+        }
+
+        if(!blogId || !Types.ObjectId.isValid(blogId)){
+            return new NextResponse(JSON.stringify({ message: "Invalid or missing Blog Id"}),
+                {
+                    status: 400
+                }
+            )
+        }
+
+        await connect();
+
+        const user = await User.findById(userId);
+        if(!user){
+            return new NextResponse(
+                JSON.stringify({message: "User not found"}),
+                {
+                    status: 404
+                }
+            )
+            
+        }
+
+        const blog = await Blog.findOne({_id: blogId, user: userId})
+        if(!blog){
+            return new NextResponse(
+                JSON.stringify({message: "Blog not found"}),
+                {
+                    status: 404
+                }
+            )  
+        }  
+
+        await Blog.findByIdAndDelete(blogId);
+
+        return new NextResponse(
+            JSON.stringify({
+                message: "Blog is deleted successfully"
+            }),
+            {status: 200}
+        )
+
+    } catch (error: any) {
+        return new NextResponse( 
+            JSON.stringify({ message: "Error in deleting blog" + error.message }),{
             status: 500
         });
     }

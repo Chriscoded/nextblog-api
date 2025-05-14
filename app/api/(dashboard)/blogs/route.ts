@@ -28,7 +28,7 @@ export const GET = async (request: Request) => {
 
         if(!user){
             return new NextResponse(
-                JSON.stringify({message: "User not found in the database"}),
+                JSON.stringify({message: "User not found"}),
                 {
                     status: 404
                 }
@@ -39,7 +39,7 @@ export const GET = async (request: Request) => {
         const category = await Category.findById(categoryId);
         if(!category){
             return new NextResponse(
-                JSON.stringify({message: "Category not found in the database"}),
+                JSON.stringify({message: "Category not found"}),
                 {
                     status: 404
                 }
@@ -52,7 +52,6 @@ export const GET = async (request: Request) => {
             category: new Types.ObjectId(categoryId)
         };
 
-            console.log()
         //TODO
         
             const blogs = await Blog.find(filter);
@@ -96,7 +95,7 @@ export const POST = async (request: Request) =>{
 
         if(!user){
             return new NextResponse(
-                JSON.stringify({message: "User not found in the database"}),
+                JSON.stringify({message: "User not found"}),
                 {
                     status: 404
                 }
@@ -107,7 +106,7 @@ export const POST = async (request: Request) =>{
         const category = await Category.findById(categoryId);
         if(!category){
             return new NextResponse(
-                JSON.stringify({message: "Category not found in the database"}),
+                JSON.stringify({message: "Category not found"}),
                 {
                     status: 404
                 }

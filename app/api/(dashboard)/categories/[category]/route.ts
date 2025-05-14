@@ -36,7 +36,7 @@ export const PATCH = async (request : Request, context: {params:any}) =>{
         const user = await User.findById(userId);
 
         if(!user){
-            return new NextResponse(JSON.stringify({message: "User not found in the database"}),
+            return new NextResponse(JSON.stringify({message: "User not found"}),
                 {
                     status: 404
                 }
@@ -46,7 +46,7 @@ export const PATCH = async (request : Request, context: {params:any}) =>{
         const category = await Category.findOne({_id: categoryId, user: userId});
 
         if(!category){
-            return new NextResponse(JSON.stringify({message: "Category not found in the database"}),
+            return new NextResponse(JSON.stringify({message: "Category not found"}),
                 {
                     status: 404
                 }
@@ -102,7 +102,7 @@ export const DELETE = async ( request: Request, context: {params:any}) => {
         const user = await User.findById(userId);
 
         if(!user){
-            return new NextResponse(JSON.stringify({message: "User not found in the database"}),
+            return new NextResponse(JSON.stringify({message: "User not found"}),
                 {
                     status: 404
                 }
@@ -112,7 +112,7 @@ export const DELETE = async ( request: Request, context: {params:any}) => {
         const category = await Category.findOne({_id: categoryId, user: userId});
 
         if(!category){
-            return new NextResponse(JSON.stringify({message: "Category not found in the database"}),
+            return new NextResponse(JSON.stringify({message: "Category not found"}),
                 {
                     status: 404
                 }

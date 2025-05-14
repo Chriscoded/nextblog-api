@@ -10,6 +10,14 @@ export const GET = async (request: Request) => {
         const {searchParams} = new URL(request.url);
         const userId = searchParams.get("userId");
         const categoryId = searchParams.get("categoryId");
+        const searchKeywords = searchParams.get("keywords") as string;
+        const startDate = searchParams.get("startDate");
+        const endDate = searchParams.get("endDate");
+        const page = parseInt(searchParams.get("page") || "1");
+        const limit = parseInt(searchParams.get("limit") || "10");
+        const order = searchParams.get("order") as string;
+
+
 
         if(!userId || !Types.ObjectId.isValid(userId)){
             return new NextResponse(JSON.stringify({ message: "Invalid or missing User ID"}),
@@ -52,9 +60,44 @@ export const GET = async (request: Request) => {
             category: new Types.ObjectId(categoryId)
         };
 
+        if(searchKeywords){
+
+            //$options: 'i' means it's case insensitive whether it's found on lower or upper case it will be retrieved
+            filter.$or = [
+                {
+                    title: {$regex: searchKeywords, $options: 'i' }
+                },
+                {
+                    description: {$regex: searchKeywords, $options: 'i' }
+                }
+            ]
+        }
+
+        if(startDate && endDate){
+            filter.createdAt = {
+                $gte: new Date(startDate),
+                $lte: new Date(endDate)
+            };
+        }
+        else if(startDate){
+            filter.createdAt = {
+                $gte: new Date(startDate)
+            };
+        }
+        else if(endDate){
+            filter.createdAt = {
+                $lte: new Date(endDate)
+            };
+        }
+
         //TODO
-        
-            const blogs = await Blog.find(filter);
+
+            const skip = (page - 1) * limit;
+
+            const blogs = await Blog.find(filter)
+                .sort({createdAt: order == "asc" ? "asc": "desc"})
+                .skip(skip)
+                .limit(limit);
 
         return new NextResponse(JSON.stringify({blogs}),{
             status: 200,
